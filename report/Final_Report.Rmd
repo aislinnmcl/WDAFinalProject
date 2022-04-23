@@ -1,0 +1,188 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Insert title of project here"
+subtitle: "Web address for GitHub repository"
+author: "Name"
+fontsize: 12pt
+mainfont: Times New Roman
+editor_options: 
+  chunk_output_type: console
+bibliography: references.bib
+csl: apa.csl
+nocite: '@*'
+---
+
+\newpage
+
+```{r setup, include=FALSE}
+# Set your working directory
+
+setwd("/Users/Aislinn/Documents/GitHub/WDAFinalProject/")
+
+# Load your packages
+
+library(tidyverse)
+library(dataRetrieval)
+library(lubridate)
+library(cowplot)
+library(sf)
+library(mapview)
+library(Kendall)
+
+# Set your ggplot theme
+
+mytheme <-
+  theme_gray(base_size = 12) +
+  theme(legend.background = element_rect(fill = "gray"), legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 14, color = "black", hjust = 0.5),
+        plot.subtitle = element_text(size = 10, color = "black", hjust = 0.5))
+
+theme_set(mytheme)
+
+# Load your datasets
+
+gages <- read.csv("./data/raw/gages.csv", header = TRUE)
+
+discharge <- readNWISdv(siteNumbers = "09361500", parameterCd = "00060", startDate = "", endDate = "")
+
+snotel <- read.csv("./data/raw/snotel_data.csv")
+
+# Wrangle datasets
+
+discharge_wrangled <- discharge %>%
+  filter(Date >= "1987-01-01" & Date <= "2021-12-31") %>% 
+  rename("Discharge" = "X_00060_00003") %>%
+  select(c(Date, Discharge))
+
+snotel$Date <- mdy(snotel$Date)
+
+snotel_wrangled <- snotel %>%
+  filter(Date >= "1987-01-01" & Date <= "2021-12-31") %>%
+  mutate(Year = year(Date)) %>%
+  select(Date, SWE..in., Year) %>%
+  rename("SWE" = "SWE..in.")
+
+```
+
+
+# Rationale and Research Questions
+
+While many of the rivers we've examined over the course of the semester are in North Carolina and have discharge levels driven primarily by precipitation, many rivers in the western U.S. are heavily influenced by runoff from snowpack and their discharges are more seasonal. The relationship between snowpack, measured as snow-water equivalent (SWE), and discharge is less direct than precipitation and discharge, and often influenced by a number of other factors. My project explores two questions:
+
+* What is the relationship between peak SWE and peak discharge in terms of magnitude and timing?
+* How has the lag time between peak snowpack and peak runoff change over time?
+
+
+\newpage
+
+# Dataset Information & Methodology
+
+Discharge data was obtained from USGS gage 09361500 on the Animas River at Durango, CO. SWE data was obtained from a SNOTEL sensor located at Molas Lake, approximately 34 miles upstream of the USGS gage. Although the period of record for discharge at this USGS gage extends from October 1, 1897 to present day, this study is limited to the first full calendar year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake on August 6, 1986. This study examines the period from 1987 - 2021.
+
+Peak annual discharge is the maximum daily discharge measured in cubic feet per second recorded for each year. Peak annual SWE is the maximum daily SWE measured in inches recorded for each year. To account for multiple peaks within a calendar year, this study uses the maximum recorded latest in each year.
+
+\newpage
+
+# Exploratory Analysis 
+
+Discharge on the Animas River is very seasonal, typically characterized by peaks in the months of May and June due to runoff from snowmelt (Figure 1). A Mann-Kendall test shows that discharge on the Animas has been decreasing significantly since 1987 (p < 0.05).
+
+```{r, echo = FALSE, message = FALSE, results="hide",fig.keep= "all", fig.cap="Daily discharge measured in cubic feet per second on the Animas River at Durango, Colorado"}
+
+discharge_ts <- ts(discharge_wrangled[[2]], frequency = 1)
+discharge_model <- MannKendall(discharge_ts)
+summary(discharge_model)
+
+ggplot(data = discharge_wrangled, aes(x = Date, y = Discharge)) +
+  geom_line() +
+  labs(title = "Daily Discharge on the Animas River", subtitle = "1987 - 2021", y = "Discharge (cfs)") + 
+  geom_smooth(method = lm)
+
+
+```
+
+
+The seasonality of SWE in the mountains above Durango generally mirrors that of discharge in the Animas River (Figure 2), although peak SWE occurs 54 days prior to peak discharge on average. a Mann-Kendall test reveals that SWE has also been decreasing during the same period. It is unsurprising that both levels of discharge and SWE have decreased from 1987-2021: a new study reveals that "2000-2021 was the driest 22-yr period since at least 800" [WILLIAMS2022232].
+
+```{r, echo = FALSE, message = FALSE, results="hide",fig.keep= "all", fig.cap="Snow water equivalent at Molas Lake, upstream of the Animas River USGS gage in Durango"}
+
+snowpack_ts <- ts(snotel_wrangled[[2]], frequency = 1)
+snowpack_model <- MannKendall(snowpack_ts)
+summary(snowpack_model)
+
+ggplot(data = snotel_wrangled, aes(x = Date, y = SWE)) +
+  geom_line() +
+  labs(title = "Daily SWE at Molas Lake", subtitle = "1987 - 2021", y = "SWE (in)") + 
+  geom_smooth(method = lm)
+
+
+```
+
+\newpage
+
+# Analysis
+
+
+## Question 1: What is the relationship between peak SWE and peak discharge in terms of magnitude and timing?
+
+```{r echo = FALSE, message = FALSE, results="hide",fig.keep= "all"}
+
+snotel_max <- snotel_wrangled %>%
+  group_by(Year) %>%
+  mutate(max = max(SWE)) %>%
+  filter(max == SWE) %>%
+  group_by(Year) %>%
+  filter(Date == max(Date)) # chose latest date in year
+
+discharge_max <- discharge_wrangled %>%
+  mutate(Year = year(Date)) %>%
+  group_by(Year) %>%
+  mutate(Max = max(Discharge)) %>%
+  filter(Max == Discharge) %>%
+  group_by(Year) %>%
+  filter(Date == max(Date)) # chose latest date in year
+
+df_max <- merge(discharge_max, snotel_max, by = "Year") %>%
+  rename(c("max_discharge_date" = "Date.x", "max_snowpack_date" = "Date.y"), "max_discharge_cfs" = "Max", "max_swe_in" = "max") %>%
+  mutate(lag = as.numeric(difftime(max_discharge_date, max_snowpack_date, units = "days")))
+
+
+
+```
+
+
+## Question 2: How has the lag time between peak snowpack and peak runoff change over time?
+
+
+```{r echo = FALSE, message = FALSE, results="hide",fig.keep= "all"}
+
+lag_ts <- ts(df_max[[8]], start = c(1987,1),frequency = 365)
+
+lag_trend <- MannKendall(lag_ts)
+summary(lag_trend) # p > 0.05, no monotonic trend
+
+# depth of SWE does influence lag time
+
+SWE_lag_model <- lm(data = df_max, max_swe_in ~ lag)
+summary(SWE_lag_model)
+
+
+```
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 
