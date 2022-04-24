@@ -39,8 +39,8 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Insert title of project here},
-  pdfauthor={Name},
+  pdftitle={Animas River, Colorado, Credit: Jerry and Pat Donaho Snowpack and Discharge: A Case Study on the Animas River},
+  pdfauthor={Aislinn McLaughlin},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -86,15 +86,17 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\title{Insert title of project here}
+\title{\includegraphics{animas_river.jpg}\\
+Snowpack and Discharge:\\
+A Case Study on the Animas River}
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-\subtitle{Web address for GitHub repository}
-\author{Name}
+\subtitle{\url{https://github.com/aislinnmcl/WDAFinalProject}}
+\author{Aislinn McLaughlin}
 \date{}
 
 \begin{document}
@@ -106,37 +108,58 @@
 \section{Rationale and Research
 Questions}\label{rationale-and-research-questions}}
 
-While many of the rivers we've examined over the course of the semester
-are in North Carolina and have discharge levels driven primarily by
-precipitation, many rivers in the western U.S. are heavily influenced by
-runoff from snowpack and their discharges are more seasonal. The
-relationship between snowpack, measured as snow-water equivalent (SWE),
-and discharge is less direct than precipitation and discharge, and often
-influenced by a number of other factors. My project explores two
-questions:
+\begin{figure}
+\centering
+\includegraphics{molas_lake.jpg}
+\caption{Molas Lake, Credit: Carol M. Highsmith (2015)}
+\end{figure}
+
+While a number of the rivers we've examined over the course of the
+semester are in North Carolina and have discharge levels driven
+primarily by precipitation, many rivers in the western U.S. are heavily
+influenced by runoff from snowpack and their discharges are more
+seasonal. The relationship between snowpack, measured as snow-water
+equivalent (SWE), and discharge is less direct than precipitation and
+discharge, and often influenced by a number of other factors. My project
+aims to establish a direct relationship between SWE and discharge
+through two questions:
 
 \begin{itemize}
-\tightlist
 \item
   What is the relationship between peak SWE and peak discharge in terms
   of magnitude and timing?
 \item
-  How has the lag time between peak snowpack and peak runoff change over
-  time?
+  How has the lag time between peak snowpack and peak runoff changed
+  over time?
 \end{itemize}
 
 \newpage
 
-\hypertarget{dataset-information}{%
-\section{Dataset Information}\label{dataset-information}}
+\hypertarget{dataset-information-methodology}{%
+\section{Dataset Information \&
+Methodology}\label{dataset-information-methodology}}
 
-\newpage
+Discharge data was obtained from USGS gage 09361500 on the Animas River
+at Durango, CO. SWE data was obtained from SNOTEL sensor 632 located at
+Molas Lake, approximately 34 miles upstream of the USGS gage. Figure 2
+illustrates the location of both data collection sites. Although the
+period of record for discharge at this USGS gage extends from October 1,
+1897 to present day, this study is limited to the first full calendar
+year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake
+on August 6, 1986. This study examines the period from 1987-2021.
 
-\hypertarget{methodology}{%
-\section{Methodology}\label{methodology}}
+\begin{figure}
+\centering
+\includegraphics{gage_locations.png}
+\caption{Location of the USGS gage on the Animas River at Durango, CO
+and the SNOTEL sensor at Molas Lake}
+\end{figure}
 
-Look at cal year bc max SWE occurs in April and max discharge occurs in
-summer.
+Peak annual discharge is the maximum daily discharge measured in cubic
+feet per second recorded for each year. Peak annual SWE is the maximum
+daily SWE measured in inches recorded for each year. To account for
+multiple peaks within a calendar year, this study uses the maximum
+discharge or maximum SWE recorded at the latest date in each year.
 
 \newpage
 
@@ -145,7 +168,7 @@ summer.
 
 Discharge on the Animas River is very seasonal, typically characterized
 by peaks in the months of May and June due to runoff from snowmelt
-(Figure 1). A Mann-Kendall test shows that discharge on the Animas has
+(Figure 3). A Mann-Kendall test shows that discharge on the Animas has
 been decreasing significantly since 1987 (p \textless{} 0.05).
 
 \begin{figure}
@@ -155,13 +178,15 @@ been decreasing significantly since 1987 (p \textless{} 0.05).
 River at Durango, Colorado}
 \end{figure}
 
+\newpage
+
 The seasonality of SWE in the mountains above Durango generally mirrors
-that of discharge in the Animas River (Figure 2), although peak SWE
+that of discharge in the Animas River (Figure 4), although peak SWE
 occurs 54 days prior to peak discharge on average. a Mann-Kendall test
 reveals that SWE has also been decreasing during the same period. It is
 unsurprising that both levels of discharge and SWE have decreased from
 1987-2021: a new study reveals that ``2000-2021 was the driest 22-yr
-period since at least 800'' {[}WILLIAMS2022232{]}.
+period since at least 800'' (A. Park Williams, 2022).
 
 \begin{figure}
 \centering
@@ -180,23 +205,106 @@ River USGS gage in Durango}
 peak discharge in terms of magnitude and
 timing?}\label{question-1-what-is-the-relationship-between-peak-swe-and-peak-discharge-in-terms-of-magnitude-and-timing}}
 
-\hypertarget{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-change-over-time}{%
+In general, peak SWE and peak discharge appear to mirror each other
+quite closely in magnitude (Figure 5). Years with more snowpack
+generally also have higher discharges, although the maximum discharges
+across the period of record are not necessarily correlated with maximum
+SWE. The highest annual maximum discharges on the Animas from 1987-2021
+occurred in 2005 and 2006 while the highest annual maximum SWE occurred
+in 1995 and 1993.
+
+\begin{figure}
+\centering
+\includegraphics{snowpack_discharge_plot.png}
+\caption{SWE-Discharge Relationship}
+\end{figure}
+
+A linear model shows that peak SWE explains 43\% of the variability in
+peak discharge (p \textless{} 0.001)(Figure 6). Although a linear model
+does not show a significant relationship, it also appears that peak SWE
+helps determine the day of the year on which maximum annual discharge
+occurs: the higher the peak SWE, the more days it takes to reach peak
+discharge (Figure 7). A denser snowpack will take longer to melt,
+resulting in a delayed peak discharge on the river.
+
+\begin{figure}
+\centering
+\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+\caption{The relationship between peak annual SWE and peak annual
+discharge}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-5-1.pdf}
+\caption{Relationship between peak SWE and the day of the year on which
+peak discharge occurs}
+\end{figure}
+
+\newpage
+
+\hypertarget{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-changed-over-time}{%
 \subsection{Question 2: How has the lag time between peak snowpack and
-peak runoff change over
-time?}\label{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-change-over-time}}
+peak runoff changed over
+time?}\label{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-changed-over-time}}
+
+Although lag time generally seems to be trending upward, a Mann-Kendall
+test indicates there is no statistically significant monotonic trend in
+lag time from 1987-2021 (p \textgreater{} 0.05) (Figure 8). The
+hypothesis that a greater maximum SWE would lead to a longer lag time
+was not supported by the analysis which did not reveal any significant
+relationship between SWE depth and lag time; in fact, lag time appears
+to decrease as peak SWE increases (Figure 9).
+
+\begin{figure}
+\centering
+\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-6-1.pdf}
+\caption{Days between maximum recorded SWE and maximum recorded
+discharge for each year from 1987-2021}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-7-1.pdf}
+\caption{Relationship between peak SWE and lag time to peak discharge}
+\end{figure}
 
 \newpage
 
 \hypertarget{summary-and-conclusions}{%
 \section{Summary and Conclusions}\label{summary-and-conclusions}}
 
+Several factors outside the scope of this study have a direct impact on
+the relationship between SWE and discharge, including soil moisture and
+water diversions. If the soil moisture is low at the time the ground
+freezes for the winter, then spring runoff from the snowpack must first
+rehydrate the soil before flowing down into any other bodies of water.
+This would explain why greater peak SWE does not necessarily translate
+into greater peak discharge. Additionally, many water rights allocations
+exist between the SNOTEL sensor and the USGS stream gage, and many of
+those are for irrigation (Figure). Water withdrawals from the Animas
+River upstream of the gage would affect the ability to correlate SWE
+with discharge.
+
+Although an effort was made to select proximate data sources, the
+distance between the SNOTEL sensor and the USGS stream gage could
+influence the relationship between SWE and discharge. It is possible
+that some of the runoff from snowmelt flowed into a body of water other
+than the Animas River or evaporated over the course of its path from
+Molas Lake to the Animas.
+
+Future research could focus on constructing a model that incorporates
+factors such as soil moisture, precipitation, air temperature, distance
+from sensor to gage, local water diversions in addition to SWE and
+discharge data. This model would likely provide a much more
+comprehensive picture of the relationship between peak SWE and peak
+discharge and illustrate the impact of more explanatory variables.
+
 \newpage
 
 \hypertarget{references}{%
-\section{References}\label{references}}
-
-\textless add references here if relevant, otherwise delete this
-section\textgreater{}
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
@@ -204,7 +312,7 @@ section\textgreater{}
 A. Park Williams, J. E. S., Benjamin I. Cook. (2022). Rapid
 intensification of the emerging southwestern north american megadrought
 in 2020--2021. \emph{Nature Climate Change}, \emph{12}, 232--234.
-https://doi.org/\url{https://doi.org/10.1016/j.landurbplan.2013.12.008}
+https://doi.org/\url{https://doi.org/10.25921/8pt9-hz08}
 
 \end{CSLReferences}
 

@@ -76,6 +76,10 @@ mapviewOptions(basemaps = c("Stamen.TerrainBackground"))
 SWE_discharge_model <- lm(data = df_max, max_discharge_cfs ~ max_swe_in)
 summary(SWE_discharge_model)
 
+ggplot(df_max, aes(x = max_discharge_cfs, y = max_swe_in)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE)
+
 
 # has lag time been trending up or down?
 
