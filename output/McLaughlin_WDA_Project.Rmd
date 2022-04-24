@@ -8,7 +8,7 @@ geometry: margin=2.54cm
 title: |
         ![Animas River, Colorado, Credit: Jerry and Pat Donaho](animas_river.jpg)  
         Snowpack and Discharge:  
-        A Case Study on the Animas River  
+        A Case Study on the Animas River
 subtitle: "https://github.com/aislinnmcl/WDAFinalProject"
 author: "Aislinn McLaughlin"
 fontsize: 12pt
@@ -67,8 +67,6 @@ discharge_wrangled <- discharge %>%
 
 discharge_wrangled <- left_join(Days, discharge_wrangled)
 
-write.csv(discharge_wrangled, "./data/processed/discharge_wrangled.csv")
-
 snotel$Date <- mdy(snotel$Date)
 
 snotel_wrangled <- snotel %>%
@@ -78,9 +76,6 @@ snotel_wrangled <- snotel %>%
   rename("SWE" = "SWE..in.")
 
 snotel_wrangled <- left_join(Days, snotel_wrangled)
-
-write.csv(snotel_wrangled, "./data/processed/snotel_wrangled.csv")
-
 ```
 
 
@@ -88,19 +83,29 @@ write.csv(snotel_wrangled, "./data/processed/snotel_wrangled.csv")
 
 ![Molas Lake, Credit: Carol M. Highsmith (2015)](molas_lake.jpg)
 
-While a number of the rivers we've examined over the course of the semester are in North Carolina and have discharge levels driven primarily by precipitation, many rivers in the western U.S. are heavily influenced by runoff from snowpack and their discharges are more seasonal. The relationship between snowpack, measured as snow-water equivalent (SWE), and discharge is less direct than precipitation and discharge, and often influenced by a number of other factors. My project aims to establish a direct relationship between SWE and discharge through two questions:
+While a number of the rivers located in the eastern U.S. have discharge levels driven primarily by precipitation, many rivers in the western U.S. are heavily influenced by runoff from snowpack and their discharges are more seasonal. The relationship between snowpack, measured as snow-water equivalent (SWE), and discharge is less direct than precipitation and discharge, and often influenced by a number of other factors. The author selected this particular region to explore snowpack and discharge due to her fondness for the area and the time she spent there in summer 2021.
+
+This project aims to establish a direct relationship between SWE and discharge through two questions:
 
 * What is the relationship between peak SWE and peak discharge in terms of magnitude and timing?
 
-* How has the lag time between peak snowpack and peak runoff changed over time?
+* How has the lag time between peak snowpack and peak discharge changed over time?
 
 \newpage
 
 # Dataset Information & Methodology
 
-Discharge data was obtained from USGS gage 09361500 on the Animas River at Durango, CO. SWE data was obtained from SNOTEL sensor 632 located at Molas Lake, approximately 34 miles upstream of the USGS gage. Figure 2 illustrates the location of both data collection sites. Although the period of record for discharge at this USGS gage extends from October 1, 1897 to present day, this study is limited to the first full calendar year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake on August 6, 1986. This study examines the period from 1987-2021.
+Discharge data was obtained from a USGS gage on the Animas River at Durango, CO. SWE data was obtained from SNOTEL sensor 632 located at Molas Lake, approximately 34 miles upstream of the USGS gage. See table below for more information.
 
-![Location of the USGS gage on the Animas River at Durango, CO and the SNOTEL sensor at Molas Lake](gage_locations.png)
+```{r echo = FALSE, results = 'asis'}
+x = openxlsx::read.xlsx("dataset_info.xlsx", check.names = FALSE)
+knitr::kable(x)
+
+```
+
+Figure 2 illustrates the location of both data collection sites. Although the period of record for discharge at this USGS gage extends from October 1, 1897 to present day, this study is limited to the first full calendar year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake on August 6, 1986. This study examines the period from 1987-2021.
+
+![Location of the USGS gage on the Animas River at Durango, CO and the SNOTEL sensor at Molas Lake](gage_locations.png){width=4.5in}
 
 Peak annual discharge is the maximum daily discharge measured in cubic feet per second recorded for each year. Peak annual SWE is the maximum daily SWE measured in inches recorded for each year. To account for multiple peaks within a calendar year, this study uses the maximum discharge or maximum SWE recorded at the latest date in each year.
 
@@ -181,7 +186,7 @@ df_max <- merge(discharge_max, snotel_max, by = "Year") %>%
 
 A linear model shows that peak SWE explains 43% of the variability in peak discharge (p < 0.001)(Figure 6). Although a linear model does not show a significant relationship, it also appears that peak SWE helps determine the day of the year on which maximum annual discharge occurs: the higher the peak SWE, the more days it takes to reach peak discharge (Figure 7). A denser snowpack will take longer to melt, resulting in a delayed peak discharge on the river.
 
-```{r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="The relationship between peak annual SWE and peak annual discharge"}
+```{r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="The relationship between peak annual SWE and peak annual discharge", fig.height=3, fig.width=5}
 
 # does peak SWE help determine peak discharge?
 
@@ -195,7 +200,7 @@ ggplot(df_max, aes(x = max_discharge_cfs, y = max_swe_in)) +
 ```
 
 
-``` {r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="Relationship between peak SWE and the day of the year on which peak discharge occurs"}
+``` {r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="Relationship between peak SWE and the day of the year on which peak discharge occurs", fig.width=5, fig.height=3}
 # does peak SWE determine timing of peak discharge?
 
 SWE_discharge_timing_model <- lm(data = filter(df_max, max_discharge_date_daynum < 200), max_discharge_date_daynum ~ max_swe_in)
@@ -210,7 +215,7 @@ ggplot(filter(df_max, max_discharge_date_daynum < 200), aes(x = max_discharge_da
 
 \newpage
 
-## Question 2: How has the lag time between peak snowpack and peak runoff changed over time?
+## Question 2: How has the lag time between peak snowpack and peak discharge changed over time?
 
 Although lag time generally seems to be trending upward, a Mann-Kendall test indicates there is no statistically significant monotonic trend in lag time from 1987-2021 (p > 0.05) (Figure 8). The hypothesis that a greater maximum SWE would lead to a longer lag time was not supported by the analysis which did not reveal any significant relationship between SWE depth and lag time; in fact, lag time appears to decrease as peak SWE increases (Figure 9).
 
@@ -242,13 +247,13 @@ ggplot(df_max, aes(x = lag, y = max_swe_in)) +
   geom_smooth(method = lm, se = FALSE) + 
   labs(title = "Peak SWE and Lag Time", subtitle = "1987-2021", x = "Lag Time (days)", y = "Peak SWE (in)")
 
-
 ```
-
 
 \newpage
 
 # Summary and Conclusions
+
+The results of this study indicate that peak SWE and peak discharge are directly correlated in terms of magnitude: a higher peak SWE indicates a higher peak discharge. However, it is more difficult to determine a significant relationship in terms of timing. There also was not a significant relationship between peak SWE and lag time: lag time does not appear to be increasing or decreasing significantly across the period of record nor does peak SWE seem to determine when during the year peak discharge occurs.
 
 Several factors outside the scope of this study have a direct impact on the relationship between SWE and discharge, including soil moisture and water diversions. If the soil moisture is low at the time the ground freezes for the winter, then spring runoff from the snowpack must first rehydrate the soil before flowing down into any other bodies of water. This would explain why greater peak SWE does not necessarily translate into greater peak discharge. Additionally, many water rights allocations exist between the SNOTEL sensor and the USGS stream gage, and many of those are for irrigation (Figure). Water withdrawals from the Animas River upstream of the gage would affect the ability to correlate SWE with discharge.
 

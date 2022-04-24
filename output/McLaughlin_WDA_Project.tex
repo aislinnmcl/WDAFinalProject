@@ -45,6 +45,16 @@
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=2.54cm]{geometry}
+\usepackage{longtable,booktabs}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -114,22 +124,25 @@ Questions}\label{rationale-and-research-questions}}
 \caption{Molas Lake, Credit: Carol M. Highsmith (2015)}
 \end{figure}
 
-While a number of the rivers we've examined over the course of the
-semester are in North Carolina and have discharge levels driven
-primarily by precipitation, many rivers in the western U.S. are heavily
-influenced by runoff from snowpack and their discharges are more
-seasonal. The relationship between snowpack, measured as snow-water
-equivalent (SWE), and discharge is less direct than precipitation and
-discharge, and often influenced by a number of other factors. My project
-aims to establish a direct relationship between SWE and discharge
-through two questions:
+While a number of the rivers located in the eastern U.S. have discharge
+levels driven primarily by precipitation, many rivers in the western
+U.S. are heavily influenced by runoff from snowpack and their discharges
+are more seasonal. The relationship between snowpack, measured as
+snow-water equivalent (SWE), and discharge is less direct than
+precipitation and discharge, and often influenced by a number of other
+factors. The author selected this particular region to explore snowpack
+and discharge due to her fondness for the area and the time she spent
+there in summer 2021.
+
+This project aims to establish a direct relationship between SWE and
+discharge through two questions:
 
 \begin{itemize}
 \item
   What is the relationship between peak SWE and peak discharge in terms
   of magnitude and timing?
 \item
-  How has the lag time between peak snowpack and peak runoff changed
+  How has the lag time between peak snowpack and peak discharge changed
   over time?
 \end{itemize}
 
@@ -139,18 +152,32 @@ through two questions:
 \section{Dataset Information \&
 Methodology}\label{dataset-information-methodology}}
 
-Discharge data was obtained from USGS gage 09361500 on the Animas River
-at Durango, CO. SWE data was obtained from SNOTEL sensor 632 located at
-Molas Lake, approximately 34 miles upstream of the USGS gage. Figure 2
-illustrates the location of both data collection sites. Although the
-period of record for discharge at this USGS gage extends from October 1,
-1897 to present day, this study is limited to the first full calendar
-year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake
-on August 6, 1986. This study examines the period from 1987-2021.
+Discharge data was obtained from a USGS gage on the Animas River at
+Durango, CO. SWE data was obtained from SNOTEL sensor 632 located at
+Molas Lake, approximately 34 miles upstream of the USGS gage. See table
+below for more information.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Source & Site & Data.Type & Unit & Range\tabularnewline
+\midrule
+\endhead
+USGS & 09361500 & Discharge & cubic feet per second &
+84-10,700\tabularnewline
+SNOTEL & 632 & Snow water equivalent & inches & 0-37\tabularnewline
+\bottomrule
+\end{longtable}
+
+Figure 2 illustrates the location of both data collection sites.
+Although the period of record for discharge at this USGS gage extends
+from October 1, 1897 to present day, this study is limited to the first
+full calendar year of SNOTEL and USGS data. SNOTEL data collection began
+at Molas Lake on August 6, 1986. This study examines the period from
+1987-2021.
 
 \begin{figure}
 \centering
-\includegraphics{gage_locations.png}
+\includegraphics[width=4.5in,height=\textheight]{gage_locations.png}
 \caption{Location of the USGS gage on the Animas River at Durango, CO
 and the SNOTEL sensor at Molas Lake}
 \end{figure}
@@ -173,7 +200,7 @@ been decreasing significantly since 1987 (p \textless{} 0.05).
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-1-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-2-1.pdf}
 \caption{Daily discharge measured in cubic feet per second on the Animas
 River at Durango, Colorado}
 \end{figure}
@@ -190,7 +217,7 @@ period since at least 800'' (A. Park Williams, 2022).
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-2-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-3-1.pdf}
 \caption{Snow water equivalent at Molas Lake, upstream of the Animas
 River USGS gage in Durango}
 \end{figure}
@@ -229,24 +256,24 @@ resulting in a delayed peak discharge on the river.
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-5-1.pdf}
 \caption{The relationship between peak annual SWE and peak annual
 discharge}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-6-1.pdf}
 \caption{Relationship between peak SWE and the day of the year on which
 peak discharge occurs}
 \end{figure}
 
 \newpage
 
-\hypertarget{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-changed-over-time}{%
+\hypertarget{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-discharge-changed-over-time}{%
 \subsection{Question 2: How has the lag time between peak snowpack and
-peak runoff changed over
-time?}\label{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-runoff-changed-over-time}}
+peak discharge changed over
+time?}\label{question-2-how-has-the-lag-time-between-peak-snowpack-and-peak-discharge-changed-over-time}}
 
 Although lag time generally seems to be trending upward, a Mann-Kendall
 test indicates there is no statistically significant monotonic trend in
@@ -258,14 +285,14 @@ to decrease as peak SWE increases (Figure 9).
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-7-1.pdf}
 \caption{Days between maximum recorded SWE and maximum recorded
 discharge for each year from 1987-2021}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics{Final_Report_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{McLaughlin_WDA_Project_files/figure-latex/unnamed-chunk-8-1.pdf}
 \caption{Relationship between peak SWE and lag time to peak discharge}
 \end{figure}
 
@@ -273,6 +300,15 @@ discharge for each year from 1987-2021}
 
 \hypertarget{summary-and-conclusions}{%
 \section{Summary and Conclusions}\label{summary-and-conclusions}}
+
+The results of this study indicate that peak SWE and peak discharge are
+directly correlated in terms of magnitude: a higher peak SWE indicates a
+higher peak discharge. However, it is more difficult to determine a
+significant relationship in terms of timing. There also was not a
+significant relationship between peak SWE and lag time: lag time does
+not appear to be increasing or decreasing significantly across the
+period of record nor does peak SWE seem to determine when during the
+year peak discharge occurs.
 
 Several factors outside the scope of this study have a direct impact on
 the relationship between SWE and discharge, including soil moisture and
