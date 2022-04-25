@@ -63,6 +63,14 @@ discharge_max <- discharge_wrangled %>%
 
 df_max <- merge(discharge_max, snotel_max, by = "Year") %>%
   rename(c("max_discharge_date" = "Date.x", "max_snowpack_date" = "Date.y"), "max_discharge_cfs" = "Max", "max_swe_in" = "max") %>%
+  select(-(c(Discharge, SWE)))
+
+df_max$max_discharge_date[df_max$max_discharge_date == "2006-10-07"] <- "2006-06-06" # replace late runoff dates
+df_max$max_discharge_cfs[df_max$max_discharge_cfs == 7000] <- 2050
+df_max$max_discharge_date[df_max$max_discharge_date == "2002-09-12"] <- "2002-05-21"
+df_max$max_discharge_cfs[df_max$max_discharge_cfs == 947] <- 777
+
+df_max <- df_max %>%
   mutate(lag = as.numeric(difftime(max_discharge_date, max_snowpack_date, units = "days")),
          max_discharge_date_daynum = yday(max_discharge_date))
 

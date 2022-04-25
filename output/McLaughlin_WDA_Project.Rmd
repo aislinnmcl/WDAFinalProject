@@ -103,11 +103,11 @@ knitr::kable(x)
 
 ```
 
-Figure 2 illustrates the location of both data collection sites. Although the period of record for discharge at this USGS gage extends from October 1, 1897 to present day, this study is limited to the first full calendar year of SNOTEL and USGS data. SNOTEL data collection began at Molas Lake on August 6, 1986. This study examines the period from 1987-2021.
+Figure 2 illustrates the location of both data collection sites. Although the period of record for discharge at this USGS gage extends from October 1, 1897 to present day, this study is limited to the first full calendar year of SNOTEL and USGS data. Using calendar year over water year was appropriate because peak SWE and peak discharge occur close together in the spring months. SNOTEL data collection began at Molas Lake on August 6, 1986. This study examines the period from 1987-2021.
 
-![Location of the USGS gage on the Animas River at Durango, CO and the SNOTEL sensor at Molas Lake](gage_locations.png){width=4.5in}
+![Location of the USGS gage on the Animas River at Durango, CO and the SNOTEL sensor at Molas Lake](gage_locations.png){width=4.5in}{height=3.5in}
 
-Peak annual discharge is the maximum daily discharge measured in cubic feet per second recorded for each year. Peak annual SWE is the maximum daily SWE measured in inches recorded for each year. To account for multiple peaks within a calendar year, this study uses the maximum discharge or maximum SWE recorded at the latest date in each year.
+Peak annual discharge is the maximum daily discharge measured in cubic feet per second recorded for each year. Peak annual SWE is the maximum daily SWE measured in inches recorded for each year. To account for multiple peaks within a snowmelt-runoff season, this study uses the maximum discharge or maximum SWE recorded at the latest spring date in each year. In 2006 and 2002, peak discharge on the Animas occurred in October and September, respectively. Since they occurred outside the snowmelt-runoff season and are not relevant to this analysis, these peak discharges were replaced with peak discharges from May/June. 
 
 \newpage
 
@@ -178,13 +178,22 @@ discharge_max <- discharge_wrangled %>%
 
 df_max <- merge(discharge_max, snotel_max, by = "Year") %>%
   rename(c("max_discharge_date" = "Date.x", "max_snowpack_date" = "Date.y"), "max_discharge_cfs" = "Max", "max_swe_in" = "max") %>%
+  select(-(c(Discharge, SWE)))
+
+df_max$max_discharge_date[df_max$max_discharge_date == "2006-10-07"] <- "2006-06-06" # replace late runoff dates
+df_max$max_discharge_cfs[df_max$max_discharge_cfs == 7000] <- 2050
+df_max$max_discharge_date[df_max$max_discharge_date == "2002-09-12"] <- "2002-05-21"
+df_max$max_discharge_cfs[df_max$max_discharge_cfs == 947] <- 777
+
+df_max <- df_max %>%
   mutate(lag = as.numeric(difftime(max_discharge_date, max_snowpack_date, units = "days")),
          max_discharge_date_daynum = yday(max_discharge_date))
+
 
 ```
 
 
-A linear model shows that peak SWE explains 43% of the variability in peak discharge (p < 0.001)(Figure 6). Although a linear model does not show a significant relationship, it also appears that peak SWE helps determine the day of the year on which maximum annual discharge occurs: the higher the peak SWE, the more days it takes to reach peak discharge (Figure 7). A denser snowpack will take longer to melt, resulting in a delayed peak discharge on the river.
+A linear model shows that peak SWE explains 47% of the variability in peak discharge (p < 0.001)(Figure 6). Although a linear model does not show a significant relationship, it also appears that peak SWE helps determine the day of the year on which maximum annual discharge occurs: the higher the peak SWE, the more days it takes to reach peak discharge (Figure 7). A denser snowpack will take longer to melt, resulting in a delayed peak discharge on the river.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="The relationship between peak annual SWE and peak annual discharge", fig.height=3, fig.width=5}
 
@@ -217,13 +226,13 @@ ggplot(filter(df_max, max_discharge_date_daynum < 200), aes(x = max_discharge_da
 
 ## Question 2: How has the lag time between peak snowpack and peak discharge changed over time?
 
-Although lag time generally seems to be trending upward, a Mann-Kendall test indicates there is no statistically significant monotonic trend in lag time from 1987-2021 (p > 0.05) (Figure 8). The hypothesis that a greater maximum SWE would lead to a longer lag time was not supported by the analysis which did not reveal any significant relationship between SWE depth and lag time; in fact, lag time appears to decrease as peak SWE increases (Figure 9).
+Although lag time generally seems to be trending upward, a Mann-Kendall test indicates there is no statistically significant monotonic trend in lag time from 1987-2021 (p > 0.05) (Figure 8). The hypothesis that a greater maximum SWE would lead to a longer lag time was not supported by the analysis which did not reveal any significant relationship between SWE depth and lag time; in fact, lag time appears to decrease as peak SWE increases (Figure 9). The longest lag time of 104 days occurred in 2016.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, results="hide",fig.keep= "all", fig.cap="Days between maximum recorded SWE and maximum recorded discharge for each year from 1987-2021"}
 
 # has lag time been trending up or down?
 
-lag_ts <- ts(df_max[[8]], start = c(1987,1),frequency = 365)
+lag_ts <- ts(df_max[[6]], start = c(1987,1),frequency = 365)
 
 lag_trend <- MannKendall(lag_ts)
 summary(lag_trend) # p > 0.05, no monotonic trend
@@ -239,7 +248,7 @@ ggplot(df_max, aes(x = Year, y = lag)) +
 
 # does SWE influence lag time?
 
-SWE_lag_model <- lm(data = df_max, max_swe_in ~ lag)
+SWE_lag_model <- lm(data = df_max, lag ~ max_swe_in)
 summary(SWE_lag_model)
 
 ggplot(df_max, aes(x = lag, y = max_swe_in)) +
